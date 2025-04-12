@@ -1,0 +1,16 @@
+-- View currently active (non-idle, non-background) requests with session details
+SELECT 
+    p.spid AS SessionID,
+    p.status,
+    p.hostname,
+    p.loginame,
+    p.cpu,
+    r.start_time,
+    r.command,
+    p.program_name
+FROM 
+    sys.dm_exec_requests AS r
+JOIN 
+    master.dbo.sysprocesses AS p ON r.session_id = p.spid
+WHERE 
+    p.status NOT IN ('sleeping', 'background');
